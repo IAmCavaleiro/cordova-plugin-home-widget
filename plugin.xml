@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-home-widget"
+        version="1.0.0">
+
+    <name>HomeWidget</name>
+    <description>Shows a generic, data-driven home screen widget (title, value, subtitle, badge, progress) that the app can update from JavaScript.</description>
+    <license>MIT</license>
+    <keywords>cordova,widget,appwidget,home screen,outsystems</keywords>
+
+    <engines>
+        <engine name="cordova-android" version=">=9.0.0" />
+    </engines>
+
+    <!-- Name shown in the launcher's widget picker. Override with a plugin variable. -->
+    <preference name="WIDGET_LABEL" default="Summary" />
+    <preference name="WIDGET_DESCRIPTION" default="Shows your latest summary at a glance" />
+
+    <js-module src="www/HomeWidget.js" name="HomeWidget">
+        <clobbers target="HomeWidget" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="HomeWidget">
+                <param name="android-package" value="com.homewidget.plugin.HomeWidget" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver
+                android:name="com.homewidget.plugin.HomeWidgetProvider"
+                android:label="@string/hw_widget_label"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/hw_home_widget_info" />
+            </receiver>
+        </config-file>
+
+        <config-file target="res/values/strings.xml" parent="/resources">
+            <string name="hw_widget_label">$WIDGET_LABEL</string>
+            <string name="hw_widget_description">$WIDGET_DESCRIPTION</string>
+        </config-file>
+
+        <source-file src="src/android/HomeWidget.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/HomeWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/HomeWidgetStore.java" target-dir="src/com/homewidget/plugin" />
+
+        <resource-file src="res/android/layout/hw_home_widget.xml" target="app/src/main/res/layout/hw_home_widget.xml" />
+        <resource-file src="res/android/xml/hw_home_widget_info.xml" target="app/src/main/res/xml/hw_home_widget_info.xml" />
+        <resource-file src="res/android/drawable/hw_widget_background.xml" target="app/src/main/res/drawable/hw_widget_background.xml" />
+        <resource-file src="res/android/drawable/hw_badge_background.xml" target="app/src/main/res/drawable/hw_badge_background.xml" />
+        <resource-file src="res/android/drawable/hw_accent_bar.xml" target="app/src/main/res/drawable/hw_accent_bar.xml" />
+        <resource-file src="res/android/values/hw_colors.xml" target="app/src/main/res/values/hw_colors.xml" />
+        <resource-file src="res/android/values-night/hw_colors.xml" target="app/src/main/res/values-night/hw_colors.xml" />
+    </platform>
+</plugin>

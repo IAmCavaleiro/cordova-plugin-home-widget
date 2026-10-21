@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hw_background">#FFFFFFFF</color>
+    <color name="hw_text_primary">#FF1F1F1F</color>
+    <color name="hw_text_secondary">#FF6B6B6B</color>
+    <color name="hw_divider">#1A000000</color>
+    <color name="hw_badge_background">#14000000</color>
+    <color name="hw_accent">#FF1A73E8</color>
+</resources>
