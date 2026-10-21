@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-home-widget"
-        version="1.0.2">
+        version="1.1.0">
 
     <name>HomeWidget</name>
     <description>Shows a generic, data-driven home screen widget (title, value, subtitle, badge, progress) that the app can update from JavaScript.</description>
@@ -13,9 +13,12 @@
         <engine name="cordova-android" version=">=8.0.0" />
     </engines>
 
-    <!-- Name shown in the launcher's widget picker. Override with a plugin variable. -->
-    <preference name="WIDGET_LABEL" default="Summary" />
-    <preference name="WIDGET_DESCRIPTION" default="Shows your latest summary at a glance" />
+    <!-- Names shown in the launcher's widget picker. Override with plugin variables.
+         Picker shows: WIDGET_LABEL, "WIDGET_LABEL (small)", EVENT_LABEL, "EVENT_LABEL countdown", "EVENT_LABEL (small)". -->
+    <preference name="WIDGET_LABEL" default="Bill" />
+    <preference name="WIDGET_DESCRIPTION" default="Your latest bill at a glance" />
+    <preference name="EVENT_LABEL" default="Event" />
+    <preference name="EVENT_DESCRIPTION" default="Your next event at a glance" />
 
     <js-module src="www/HomeWidget.js" name="HomeWidget">
         <clobbers target="HomeWidget" />
@@ -29,31 +32,92 @@
             </feature>
         </config-file>
 
+        <!-- One receiver per widget in the launcher's picker. -->
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <receiver
                 android:name="com.homewidget.plugin.HomeWidgetProvider"
-                android:label="@string/hw_widget_label"
+                android:label="@string/hw_label_bill"
                 android:exported="false">
                 <intent-filter>
                     <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 </intent-filter>
                 <meta-data
                     android:name="android.appwidget.provider"
-                    android:resource="@xml/hw_home_widget_info" />
+                    android:resource="@xml/hw_info_bill" />
+            </receiver>
+            <receiver
+                android:name="com.homewidget.plugin.BillSmallWidgetProvider"
+                android:label="@string/hw_label_bill_small"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/hw_info_bill_small" />
+            </receiver>
+            <receiver
+                android:name="com.homewidget.plugin.EventWidgetProvider"
+                android:label="@string/hw_label_event"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/hw_info_event" />
+            </receiver>
+            <receiver
+                android:name="com.homewidget.plugin.EventCountdownWidgetProvider"
+                android:label="@string/hw_label_countdown"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/hw_info_countdown" />
+            </receiver>
+            <receiver
+                android:name="com.homewidget.plugin.EventSmallWidgetProvider"
+                android:label="@string/hw_label_event_small"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                </intent-filter>
+                <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/hw_info_event_small" />
             </receiver>
         </config-file>
 
         <source-file src="src/android/HomeWidget.java" target-dir="src/com/homewidget/plugin" />
-        <source-file src="src/android/HomeWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
         <source-file src="src/android/HomeWidgetStore.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/HomeWidgetRenderer.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/BaseWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/HomeWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/BillSmallWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/EventWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/EventCountdownWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
+        <source-file src="src/android/EventSmallWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
 
         <!-- Resources use <source-file> with an app/... target-dir: every cordova-android version copies that path as-is.
              (<resource-file> targets are relative to app/src/main only on newer versions.) -->
-        <source-file src="res/android/layout/hw_home_widget.xml" target-dir="app/src/main/res/layout" />
-        <source-file src="res/android/xml/hw_home_widget_info.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/layout/hw_bill.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/layout/hw_bill_small.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/layout/hw_event.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/layout/hw_countdown.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/layout/hw_event_small.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/xml/hw_info_bill.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/xml/hw_info_bill_small.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/xml/hw_info_event.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/xml/hw_info_countdown.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/xml/hw_info_event_small.xml" target-dir="app/src/main/res/xml" />
         <source-file src="res/android/drawable/hw_widget_background.xml" target-dir="app/src/main/res/drawable" />
-        <source-file src="res/android/drawable/hw_badge_background.xml" target-dir="app/src/main/res/drawable" />
-        <source-file src="res/android/drawable/hw_accent_bar.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_pill.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_box.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_tile_background.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_tile_top.xml" target-dir="app/src/main/res/drawable" />
         <source-file src="res/android/values/hw_colors.xml" target-dir="app/src/main/res/values" />
         <source-file src="res/android/values/hw_strings.xml" target-dir="app/src/main/res/values" />
         <source-file src="res/android/values-night/hw_colors.xml" target-dir="app/src/main/res/values-night" />

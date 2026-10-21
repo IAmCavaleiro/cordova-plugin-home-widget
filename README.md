@@ -1,24 +1,35 @@
 # cordova-plugin-home-widget
 
-A generic Android home screen widget for Cordova and **OutSystems 11** mobile apps.
-Your app sends a few fields (title, value, subtitle, badge, progress, color) and the
-widget on the phone's home screen redraws itself, even when the app is closed.
-Tapping it opens the app and tells it what was tapped.
+Android home screen widgets for Cordova and **OutSystems 11** mobile apps.
+Your app sends a bill and/or an event, and the widgets on the phone's home screen
+redraw themselves, even when the app is closed. Tapping a widget opens the app and
+tells it what was tapped.
+
+The launcher's widget picker offers five widgets; the user adds the ones they like:
+
+| Widget in the picker | Type (`requestPin`) | Shows |
+|---|---|---|
+| Bill | `bill` | Caption, big amount, due line, pay button |
+| Bill (small), 2x1 | `billSmall` | Title, amount, due line |
+| Event | `event` | Date tile (month / day / weekday), title, time, location, "In 15 days" |
+| Event countdown | `countdown` | Days / hours / minutes boxes and the date |
+| Event (small), 2x1 | `eventSmall` | Title, "In 15 days", date and time |
 
 ```
-┌──────────────────────────────────────────┐
-│▌ [icon] My telecom        Due in 15 days │  header · badge
-│▌ October bill                            │  title
-│▌ €32,50                    Pay by 5 Nov  │  value · subtitle
-│▌ ──────────────────────────────────────  │
-│▌ ████████░░░░░░░░░░░░                    │  progress (optional)
-│▌ 8.2 of 20 GB used              Pay now  │  footer · footerAction
-└──────────────────────────────────────────┘
- ▌ = accent color
+Bill                                   Event
+┌───────────────────────────────┐      ┌─────────────────────────────────┐
+│ My telecom · October bill     │      │ ┌─NOV─┐ Product launch           │
+│ €32,50                        │      │ │ 05  │ 18:30                    │
+│ Due in 15 days · 5 Nov        │      │ │ Wed │ Lisbon Congress Centre   │
+│ (        Pay now          )   │      │ └─────┘ In 15 days               │
+└───────────────────────────────┘      └─────────────────────────────────┘
 ```
 
-Version 1.0 supports **Android 6+** (cordova-android 9 or later, which covers
-current OutSystems MABS versions). iOS is planned for a later version.
+Event widgets refresh themselves every 30 minutes (the most Android allows), so
+"In N days" stays right and the countdown's minutes can lag by up to half an hour.
+
+Supports **Android 6+** (cordova-android 8 or later, including OutSystems MABS 11).
+iOS is planned for a later version.
 
 ---
 
@@ -27,35 +38,45 @@ current OutSystems MABS versions). iOS is planned for a later version.
 The plugin is available as `window.HomeWidget` after `deviceready`.
 
 ```js
+// Bill: shown by "Bill" and "Bill (small)". Every field is optional; empty fields are hidden.
 HomeWidget.update({
   header: 'My telecom',
-  badge: 'Due in 15 days',
   title: 'October bill',
   value: '€32,50',
-  subtitle: 'Pay by 5 Nov',
-  progress: 41,               // 0–100, leave out to hide the bar
-  footer: '8.2 of 20 GB used',
-  footerAction: 'Pay now',
+  badge: 'Due in 15 days',    // due line, part 1
+  subtitle: '5 Nov',          // due line, part 2
+  footerAction: 'Pay now',    // button text; leave out for no button
   accentColor: '#E60000',     // #RRGGBB or #AARRGGBB
   tapAction: 'pay-bill'       // any string, returned by onTap()
 }, onSuccess, onError);
 
-HomeWidget.clear(onSuccess, onError);                 // back to the empty state
+// Event: shown by "Event", "Event countdown" and "Event (small)". title and start are required.
+HomeWidget.updateEvent({
+  title: 'Product launch',
+  start: '2026-11-05T18:30:00', // Date, milliseconds, or a date string (no zone = phone's local time)
+  location: 'Lisbon Congress Centre',
+  accentColor: '#5B3CC4',
+  tapAction: 'open-event'
+}, onSuccess, onError);
+
+HomeWidget.clear(onSuccess, onError);                 // remove bill and event (use on logout)
+HomeWidget.clear('event', onSuccess, onError);        // or only 'bill' / 'event'
 HomeWidget.isPinSupported(function (yes) { ... });    // Android 8+ launchers
-HomeWidget.requestPin(onSuccess, onError);            // system "Add widget?" dialog
-HomeWidget.getInstalledCount(function (n) { ... });   // copies on the home screen
-HomeWidget.onTap(function (tapAction) { ... });       // widget opened the app
+HomeWidget.requestPin('countdown', onSuccess, onError); // "Add widget?" dialog; type from the table above
+HomeWidget.getInstalledCount(function (n) { ... });   // widgets of all types on the home screen
+HomeWidget.onTap(function (tapAction) { ... });       // a widget opened the app
 ```
 
-Every field is optional. A field you leave out (or send empty) is hidden.
-Data is saved on the device, so the widget keeps showing it after a reboot.
+Data is saved on the device, so the widgets keep showing it after a reboot.
 
 ### Plugin variables
 
 | Variable | Default | What it does |
 |---|---|---|
-| `WIDGET_LABEL` | `Summary` | Name in the launcher's widget picker |
-| `WIDGET_DESCRIPTION` | `Shows your latest summary at a glance` | Description in the picker (Android 12+) |
+| `WIDGET_LABEL` | `Bill` | Name of the bill widgets in the picker (the small one gets " (small)") |
+| `WIDGET_DESCRIPTION` | `Your latest bill at a glance` | Description of the bill widgets (Android 12+) |
+| `EVENT_LABEL` | `Event` | Name of the event widgets (" countdown" and " (small)" are added) |
+| `EVENT_DESCRIPTION` | `Your next event at a glance` | Description of the event widgets (Android 12+) |
 
 ---
 

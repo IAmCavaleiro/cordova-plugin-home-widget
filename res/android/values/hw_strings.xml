@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Defaults. hooks/applyWidgetStrings.js replaces them with the WIDGET_LABEL / WIDGET_DESCRIPTION plugin variables. -->
+<!-- Defaults. hooks/applyWidgetStrings.js replaces them using the WIDGET_* / EVENT_* plugin variables. -->
 <resources>
-    <string name="hw_widget_label">Summary</string>
-    <string name="hw_widget_description">Shows your latest summary at a glance</string>
+    <string name="hw_label_bill">Bill</string>
+    <string name="hw_label_bill_small">Bill (small)</string>
+    <string name="hw_label_event">Event</string>
+    <string name="hw_label_countdown">Event countdown</string>
+    <string name="hw_label_event_small">Event (small)</string>
+    <string name="hw_widget_description">Your latest bill at a glance</string>
+    <string name="hw_event_description">Your next event at a glance</string>
 </resources>
