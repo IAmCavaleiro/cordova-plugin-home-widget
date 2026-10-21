@@ -110,7 +110,10 @@ called `HomeWidgetPlugin`. Open the module properties and set
 
 ### 4. Add public client actions
 
-Each one has a single **JavaScript** node. OutSystems waits for the returned Promise.
+Each one has a single **JavaScript** node. The plugin answers asynchronously, so every
+callback must end with **`$resolve()`**: that is what makes OutSystems wait. Don't return
+your own `new Promise(...)`; OutSystems 11 doesn't wait for it, and the outputs come back
+empty (`Success = False`, no `ErrorMessage`).
 
 **CheckHomeWidgetPlugin** — output `IsAvailable` (Boolean)
 
@@ -118,59 +121,54 @@ Each one has a single **JavaScript** node. OutSystems waits for the returned Pro
 $parameters.IsAvailable = !!(window.cordova && window.HomeWidget);
 ```
 
-**UpdateHomeWidget** — input `Data` (HomeWidgetData); outputs `Success` (Boolean), `ErrorMessage` (Text)
+**UpdateHomeWidget** — input `Data` (HomeWidgetData); outputs `Success` (Boolean), `ErrorMessage` (Text).
+Give the JavaScript node one Text input per field (`Header` = `Data.Header`, …) and an Integer
+input `Progress` = `Data.Progress`, then copy its `Success` / `ErrorMessage` outputs to the action's.
 
 ```js
-return new Promise(function (resolve) {
-  if (!window.HomeWidget) {
+if (!window.HomeWidget) {
     $parameters.Success = false;
-    $parameters.ErrorMessage = "The HomeWidget plugin isn't available on this device.";
-    resolve();
+    $parameters.ErrorMessage = 'The HomeWidget plugin is not available on this device.';
+    $resolve();
     return;
-  }
-  var d = $parameters.Data;
-  window.HomeWidget.update({
-    header: d.Header,
-    title: d.Title,
-    value: d.Value,
-    subtitle: d.Subtitle,
-    badge: d.Badge,
-    footer: d.Footer,
-    footerAction: d.FooterAction,
-    progress: d.Progress < 0 ? null : d.Progress,
-    accentColor: d.AccentColor,
-    tapAction: d.TapAction
-  }, function () {
+}
+window.HomeWidget.update({
+    header: $parameters.Header,
+    title: $parameters.Title,
+    value: $parameters.Value,
+    subtitle: $parameters.Subtitle,
+    badge: $parameters.Badge,
+    footer: $parameters.Footer,
+    footerAction: $parameters.FooterAction,
+    progress: $parameters.Progress < 0 ? null : $parameters.Progress,
+    accentColor: $parameters.AccentColor,
+    tapAction: $parameters.TapAction
+}, function () {
     $parameters.Success = true;
-    resolve();
-  }, function (error) {
+    $resolve();
+}, function (error) {
     $parameters.Success = false;
-    $parameters.ErrorMessage = String(error);
-    resolve();
-  });
+    $parameters.ErrorMessage = String(error || 'Unknown error from the HomeWidget plugin.');
+    $resolve();
 });
 ```
 
 **ClearHomeWidget** — outputs `Success`, `ErrorMessage`
 
 ```js
-return new Promise(function (resolve) {
-  if (!window.HomeWidget) { $parameters.Success = false; $parameters.ErrorMessage = "Plugin not available."; resolve(); return; }
-  window.HomeWidget.clear(
-    function () { $parameters.Success = true; resolve(); },
-    function (e) { $parameters.Success = false; $parameters.ErrorMessage = String(e); resolve(); });
-});
+if (!window.HomeWidget) { $parameters.Success = false; $parameters.ErrorMessage = 'Plugin not available.'; $resolve(); return; }
+window.HomeWidget.clear(
+    function () { $parameters.Success = true; $resolve(); },
+    function (e) { $parameters.Success = false; $parameters.ErrorMessage = String(e); $resolve(); });
 ```
 
 **RequestPinHomeWidget** — outputs `Success`, `ErrorMessage`
 
 ```js
-return new Promise(function (resolve) {
-  if (!window.HomeWidget) { $parameters.Success = false; $parameters.ErrorMessage = "Plugin not available."; resolve(); return; }
-  window.HomeWidget.requestPin(
-    function () { $parameters.Success = true; resolve(); },
-    function (e) { $parameters.Success = false; $parameters.ErrorMessage = String(e); resolve(); });
-});
+if (!window.HomeWidget) { $parameters.Success = false; $parameters.ErrorMessage = 'Plugin not available.'; $resolve(); return; }
+window.HomeWidget.requestPin(
+    function () { $parameters.Success = true; $resolve(); },
+    function (e) { $parameters.Success = false; $parameters.ErrorMessage = String(e); $resolve(); });
 ```
 
 ### 5. Add a block for taps
