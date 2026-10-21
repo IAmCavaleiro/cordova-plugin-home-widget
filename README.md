@@ -25,8 +25,11 @@ Bill                                   Event
 └───────────────────────────────┘      └─────────────────────────────────┘
 ```
 
-Event widgets refresh themselves every 30 minutes (the most Android allows), so
-"In N days" stays right and the countdown's minutes can lag by up to half an hour.
+The countdown is live: its days / hours / min update every minute while it is on the
+home screen, and in the last 24 hours it turns into an HH:MM:SS timer that ticks every
+second. The minute updates don't wake the phone, so they cost almost no battery; they
+catch up as soon as the screen is on. The other event widgets refresh every 30 minutes,
+which keeps "In N days" right.
 
 Supports **Android 6+** (cordova-android 8 or later, including OutSystems MABS 11).
 iOS is planned for a later version.

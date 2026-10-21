@@ -149,6 +149,50 @@
         </FrameLayout>
     </LinearLayout>
 
+    <!-- Last 24 hours: a live countdown the launcher ticks every second (shown instead of the boxes). -->
+    <FrameLayout
+        android:id="@+id/hw_live"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/hw_live_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/hw_box" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <Chronometer
+                android:id="@+id/hw_live_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/hw_accent"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/hw_live_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/hw_accent"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/hw_footer"
         android:layout_width="match_parent"

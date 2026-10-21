@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-home-widget"
-        version="1.1.0">
+        version="1.2.0">
 
     <name>HomeWidget</name>
     <description>Shows a generic, data-driven home screen widget (title, value, subtitle, badge, progress) that the app can update from JavaScript.</description>

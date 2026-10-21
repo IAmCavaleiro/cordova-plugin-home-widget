@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -136,6 +137,7 @@ final class HomeWidgetRenderer {
         if (data == null) {
             setText(context, views, "hw_caption", appName(context));
             views.setViewVisibility(id(context, "hw_boxes"), View.GONE);
+            views.setViewVisibility(id(context, "hw_live"), View.GONE);
             setText(context, views, "hw_footer", null);
             setText(context, views, "hw_empty", "Open the app to load your event");
             views.setOnClickPendingIntent(id(context, "hw_root"), launchIntent(context, kind, ""));
@@ -155,7 +157,20 @@ final class HomeWidgetRenderer {
 
         setText(context, views, "hw_empty", null);
         setText(context, views, "hw_caption", join(data.optString("title", ""), data.optString("location", "")));
-        views.setViewVisibility(id(context, "hw_boxes"), View.VISIBLE);
+
+        // Last 24 hours: one live HH:MM:SS timer that the launcher ticks every second by itself.
+        // Earlier, the days / hours / min boxes, redrawn every minute by BaseWidgetProvider.updateTicker().
+        boolean live = left > 0L && left < DAY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+        views.setViewVisibility(id(context, "hw_boxes"), live ? View.GONE : View.VISIBLE);
+        views.setViewVisibility(id(context, "hw_live"), live ? View.VISIBLE : View.GONE);
+        if (live && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            int timerId = id(context, "hw_live_timer");
+            views.setChronometer(timerId, SystemClock.elapsedRealtime() + left, null, true);
+            views.setChronometerCountDown(timerId, true);
+            views.setTextColor(timerId, accent);
+            setNumber(context, views, "hw_live_unit", left >= HOUR ? "hours : min : sec" : "min : sec", accent);
+            views.setInt(id(context, "hw_live_bg"), "setColorFilter", boxTint);
+        }
 
         setNumber(context, views, "hw_days", String.valueOf(days), accent);
         setNumber(context, views, "hw_hours", twoDigits(hours), accent);
@@ -203,6 +218,12 @@ final class HomeWidgetRenderer {
     }
 
     // ---- Helpers ----
+
+    /** Start of the saved event in milliseconds, or 0 when there is none. */
+    static long eventStart(Context context) {
+        JSONObject data = loadEvent(context);
+        return data == null ? 0L : data.optLong("start", 0L);
+    }
 
     /** The event only counts as loaded when it has a start time. */
     private static JSONObject loadEvent(Context context) {
