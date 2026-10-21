@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-home-widget"
-        version="1.0.1">
+        version="1.0.2">
 
     <name>HomeWidget</name>
     <description>Shows a generic, data-driven home screen widget (title, value, subtitle, badge, progress) that the app can update from JavaScript.</description>
@@ -43,21 +43,21 @@
             </receiver>
         </config-file>
 
-        <config-file target="res/values/strings.xml" parent="/resources">
-            <string name="hw_widget_label">$WIDGET_LABEL</string>
-            <string name="hw_widget_description">$WIDGET_DESCRIPTION</string>
-        </config-file>
-
         <source-file src="src/android/HomeWidget.java" target-dir="src/com/homewidget/plugin" />
         <source-file src="src/android/HomeWidgetProvider.java" target-dir="src/com/homewidget/plugin" />
         <source-file src="src/android/HomeWidgetStore.java" target-dir="src/com/homewidget/plugin" />
 
-        <resource-file src="res/android/layout/hw_home_widget.xml" target="app/src/main/res/layout/hw_home_widget.xml" />
-        <resource-file src="res/android/xml/hw_home_widget_info.xml" target="app/src/main/res/xml/hw_home_widget_info.xml" />
-        <resource-file src="res/android/drawable/hw_widget_background.xml" target="app/src/main/res/drawable/hw_widget_background.xml" />
-        <resource-file src="res/android/drawable/hw_badge_background.xml" target="app/src/main/res/drawable/hw_badge_background.xml" />
-        <resource-file src="res/android/drawable/hw_accent_bar.xml" target="app/src/main/res/drawable/hw_accent_bar.xml" />
-        <resource-file src="res/android/values/hw_colors.xml" target="app/src/main/res/values/hw_colors.xml" />
-        <resource-file src="res/android/values-night/hw_colors.xml" target="app/src/main/res/values-night/hw_colors.xml" />
+        <!-- Resources use <source-file> with an app/... target-dir: every cordova-android version copies that path as-is.
+             (<resource-file> targets are relative to app/src/main only on newer versions.) -->
+        <source-file src="res/android/layout/hw_home_widget.xml" target-dir="app/src/main/res/layout" />
+        <source-file src="res/android/xml/hw_home_widget_info.xml" target-dir="app/src/main/res/xml" />
+        <source-file src="res/android/drawable/hw_widget_background.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_badge_background.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/drawable/hw_accent_bar.xml" target-dir="app/src/main/res/drawable" />
+        <source-file src="res/android/values/hw_colors.xml" target-dir="app/src/main/res/values" />
+        <source-file src="res/android/values/hw_strings.xml" target-dir="app/src/main/res/values" />
+        <source-file src="res/android/values-night/hw_colors.xml" target-dir="app/src/main/res/values-night" />
+
+        <hook type="after_prepare" src="hooks/applyWidgetStrings.js" />
     </platform>
 </plugin>

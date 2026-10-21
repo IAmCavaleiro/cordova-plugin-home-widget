@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Defaults. hooks/applyWidgetStrings.js replaces them with the WIDGET_LABEL / WIDGET_DESCRIPTION plugin variables. -->
+<resources>
+    <string name="hw_widget_label">Summary</string>
+    <string name="hw_widget_description">Shows your latest summary at a glance</string>
+</resources>
