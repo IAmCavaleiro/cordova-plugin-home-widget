@@ -1,12 +1,12 @@
 {
   "name": "cordova-plugin-home-widget",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generic, data-driven Android home screen widget for Cordova and OutSystems 11 mobile apps",
   "cordova": {
     "id": "cordova-plugin-home-widget",
     "platforms": ["android"]
   },
   "keywords": ["ecosystem:cordova", "cordova-android", "widget", "appwidget", "outsystems"],
-  "engines": { "cordovaDependencies": { "1.0.0": { "cordova-android": ">=9.0.0" } } },
+  "engines": { "cordovaDependencies": { "1.0.0": { "cordova-android": ">=8.0.0" } } },
   "license": "MIT"
 }

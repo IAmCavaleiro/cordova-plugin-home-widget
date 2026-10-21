@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-home-widget"
-        version="1.0.0">
+        version="1.0.1">
 
     <name>HomeWidget</name>
     <description>Shows a generic, data-driven home screen widget (title, value, subtitle, badge, progress) that the app can update from JavaScript.</description>
@@ -10,7 +10,7 @@
     <keywords>cordova,widget,appwidget,home screen,outsystems</keywords>
 
     <engines>
-        <engine name="cordova-android" version=">=9.0.0" />
+        <engine name="cordova-android" version=">=8.0.0" />
     </engines>
 
     <!-- Name shown in the launcher's widget picker. Override with a plugin variable. -->

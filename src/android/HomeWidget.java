@@ -68,25 +68,31 @@ public class HomeWidget extends CordovaPlugin {
             callback.error("update() needs an object");
             return;
         }
-        cordova.getThreadPool().execute(() -> {
-            try {
-                HomeWidgetStore.save(context(), data);
-                HomeWidgetProvider.refreshAll(context());
-                callback.success();
-            } catch (Exception e) {
-                callback.error("Could not update the widget: " + e.getMessage());
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HomeWidgetStore.save(context(), data);
+                    HomeWidgetProvider.refreshAll(context());
+                    callback.success();
+                } catch (Exception e) {
+                    callback.error("Could not update the widget: " + e.getMessage());
+                }
             }
         });
     }
 
     private void clear(final CallbackContext callback) {
-        cordova.getThreadPool().execute(() -> {
-            try {
-                HomeWidgetStore.clear(context());
-                HomeWidgetProvider.refreshAll(context());
-                callback.success();
-            } catch (Exception e) {
-                callback.error("Could not clear the widget: " + e.getMessage());
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HomeWidgetStore.clear(context());
+                    HomeWidgetProvider.refreshAll(context());
+                    callback.success();
+                } catch (Exception e) {
+                    callback.error("Could not clear the widget: " + e.getMessage());
+                }
             }
         });
     }
@@ -99,7 +105,7 @@ public class HomeWidget extends CordovaPlugin {
     }
 
     private void requestPin(CallbackContext callback) {
-        if (!isPinSupported()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !isPinSupported()) {
             callback.error("This launcher doesn't let apps add widgets. Long-press the home screen and choose Widgets instead.");
             return;
         }
