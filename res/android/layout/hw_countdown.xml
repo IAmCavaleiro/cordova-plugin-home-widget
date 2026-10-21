@@ -7,7 +7,10 @@
     android:background="@drawable/hw_widget_background"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="14dp">
+    android:paddingStart="14dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="14dp"
+    android:paddingBottom="6dp">
 
     <TextView
         android:id="@+id/hw_caption"
@@ -22,8 +25,8 @@
         android:id="@+id/hw_boxes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:orientation="horizontal">
 
         <FrameLayout
@@ -44,8 +47,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp">
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp">
 
                 <TextView
                     android:id="@+id/hw_days"
@@ -85,8 +88,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp">
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp">
 
                 <TextView
                     android:id="@+id/hw_hours"
@@ -126,8 +129,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp">
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp">
 
                 <TextView
                     android:id="@+id/hw_minutes"
@@ -154,8 +157,8 @@
         android:id="@+id/hw_live"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:visibility="gone">
 
         <ImageView
@@ -171,8 +174,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp">
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp">
 
             <Chronometer
                 android:id="@+id/hw_live_timer"
